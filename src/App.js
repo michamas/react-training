@@ -1,55 +1,19 @@
-import { useMemo, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { decrement, increment } from "./actions/index.js";
 
-export default function App() {
-  const [items, setItems] = useState([]);
-  const [query, setQuery] = useState("");
-  const inputRef = useRef();
-
-  const filteredItems = useMemo(() => {
-    return items.filter((item) =>
-      item.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [query, items]);
-
-  function onSubmit(e) {
-    e.preventDefault();
-    const value = inputRef.current.value;
-
-    if (value === "") return;
-    setItems((prev) => {
-      return [...prev, value];
-    });
-    inputRef.current.value = "";
-  }
-
-  // niepotrzebne
-  // function onChange(e) {
-  //   const value = e.target.value;
-
-  //   setItems((prev) => {
-  //     return prev.filter((item) =>
-  //       item.toLowerCase().includes(value.toLowerCase())
-  //     );
-  //   });
-  // }
+function App() {
+  const counter = useSelector((state) => state.counter);
+  const isLogged = useSelector((state) => state.isLogged);
+  const dispatch = useDispatch();
 
   return (
     <>
-      Search
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        // onChange={onChange}
-        type="search"
-      />
-      <form onSubmit={onSubmit}>
-        New Item: <input ref={inputRef} type="text" />
-        <button>Add</button>
-      </form>
-      <h3>Items:</h3>
-      {filteredItems.map((item) => (
-        <div>{item}</div>
-      ))}
+      <h1>Counter: {counter}</h1>
+      <button onClick={() => dispatch(increment())}>+</button>
+      <button onClick={() => dispatch(decrement())}>-</button>
+      {isLogged ? <h3>Valuable secret information</h3> : ""}
     </>
   );
 }
+
+export default App;
